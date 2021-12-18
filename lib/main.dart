@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterfire_gallery/theme/theme_provider.dart';
 
 import 'views/view_auth.dart';
 import 'views/view_home.dart';
@@ -20,7 +21,9 @@ class GalleryApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(primarySwatch: Colors.amber),
+      theme: FlutterFireTheme().lightTheme,
+      darkTheme: FlutterFireTheme().darkTheme,
+      themeMode: FlutterFireTheme().currentTheme,
       home: const AuthGate(),
     );
   }
