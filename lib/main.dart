@@ -6,7 +6,7 @@ import 'views/view_home.dart';
 /// Temporarily we will use this const to mimic the state of user.
 /// true = there's a signed in user
 /// false = no signed in user
-const bool kUser = false;
+const bool kUser = true;
 
 void main() async {
   runApp(const GalleryApp());
