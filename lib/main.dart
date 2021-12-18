@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -6,11 +7,6 @@ import 'services/shared_prefs.dart';
 import 'views/view_auth.dart';
 import 'views/view_home.dart';
 import 'theme/theme_provider.dart';
-
-/// Temporarily we will use this const to mimic the state of user.
-/// true = there's a signed in user
-/// false = no signed in user
-const bool kUser = true;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,6 +51,14 @@ class AuthGate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return kUser ? const HomeView() : const AuthView();
+    return StreamBuilder(
+      stream: FirebaseAuth.instance.userChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return const HomeView();
+        }
+        return const AuthView();
+      },
+    );
   }
 }

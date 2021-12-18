@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
+import '/widgets/widget_animated_error.dart';
 
 /// The mode of the current auth session, either [AuthMode.login] or [AuthMode.register].
 enum AuthMode { login, register }
@@ -26,6 +28,7 @@ class _AuthViewState extends State<AuthView> {
   TextEditingController passwordController = TextEditingController();
 
   bool isLoading = false;
+  String error = '';
 
   get validator =>
       (value) => value != null && value.isNotEmpty ? null : 'Required';
@@ -39,6 +42,28 @@ class _AuthViewState extends State<AuthView> {
   onPasswordAuth() async {
     if (formKey.currentState?.validate() ?? false) {
       setIsLoading(true);
+
+      try {
+        if (mode == AuthMode.login) {
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+            email: emailController.text,
+            password: passwordController.text,
+          );
+        } else {
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+            email: emailController.text,
+            password: passwordController.text,
+          );
+        }
+      } on FirebaseAuthException catch (e) {
+        setIsLoading(false);
+
+        setState(() {
+          error = '${e.message}';
+        });
+      } catch (e) {
+        setIsLoading(false);
+      }
     }
   }
 
@@ -70,9 +95,15 @@ class _AuthViewState extends State<AuthView> {
                   ),
                 ),
                 const SizedBox(height: 20),
+                AnimatedError(
+                  text: error,
+                  show: error.isNotEmpty,
+                ),
+                const SizedBox(height: 20),
                 TextFormField(
                   controller: emailController,
                   keyboardType: TextInputType.emailAddress,
+                  validator: validator,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     hintText: 'flutter@fire.com',
@@ -84,6 +115,7 @@ class _AuthViewState extends State<AuthView> {
                 TextFormField(
                   controller: passwordController,
                   obscureText: true,
+                  validator: validator,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Password',
