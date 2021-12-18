@@ -18,10 +18,15 @@ class _AuthViewState extends State<AuthView> {
   // We want to start initially from the login mode.
   AuthMode mode = AuthMode.login;
 
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
   bool isLoading = false;
+
+  get validator =>
+      (value) => value != null && value.isNotEmpty ? null : 'Required';
 
   void setIsLoading(bool loadingState) {
     setState(() {
@@ -29,7 +34,12 @@ class _AuthViewState extends State<AuthView> {
     });
   }
 
-  onPasswordAuth() async {}
+  onPasswordAuth() async {
+    if (formKey.currentState?.validate() ?? false) {
+      setIsLoading(true);
+    }
+  }
+
   onGoogleAuth() async {}
 
   @override
@@ -38,55 +48,59 @@ class _AuthViewState extends State<AuthView> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(30.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Image.asset(
-                'assets/logo.png',
-                scale: 1.5,
-              ),
-              const SizedBox(height: 20),
-              Text(
-                'FlutterFire \nGallery',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 35,
-                  color: Theme.of(context).primaryColor,
+          child: Form(
+            key: formKey,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Image.asset(
+                  'assets/logo.png',
+                  scale: 1.5,
                 ),
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                controller: emailController,
-                keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'flutter@fire.com',
-                  labelText: 'Email',
-                  prefixIcon: Icon(Icons.email),
+                const SizedBox(height: 20),
+                Text(
+                  'FlutterFire \nGallery',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 35,
+                    color: Theme.of(context).primaryColor,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                controller: passwordController,
-                obscureText: true,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Password',
-                  prefixIcon: Icon(Icons.lock),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'flutter@fire.com',
+                    labelText: 'Email',
+                    prefixIcon: Icon(Icons.email),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: isLoading ? null : onPasswordAuth,
-                  child: isLoading
-                      ? const CircularProgressIndicator.adaptive()
-                      : Text(mode.label),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: passwordController,
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Password',
+                    prefixIcon: Icon(Icons.lock),
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: isLoading ? null : onPasswordAuth,
+                    child: isLoading
+                        ? const CircularProgressIndicator.adaptive()
+                        : Text(mode.label),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
