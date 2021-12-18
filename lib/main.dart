@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'services/shared_prefs.dart';
 import 'views/view_auth.dart';
 import 'views/view_home.dart';
 import 'theme/theme_provider.dart';
@@ -11,6 +12,10 @@ import 'theme/theme_provider.dart';
 const bool kUser = true;
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await SharedPrefsService.instance.init();
+
   runApp(const GalleryApp());
 }
 

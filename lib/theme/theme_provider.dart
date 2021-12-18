@@ -1,12 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:flutterfire_gallery/theme/constants.dart';
+import '../services/shared_prefs.dart';
+import '../theme/constants.dart';
 
 class FlutterFireTheme with ChangeNotifier {
+  final _prefs = SharedPrefsService.instance.prefs;
+  ThemeMode _currentTheme = ThemeMode.system;
+
+  FlutterFireTheme() {
+    final themeFromMemory = _prefs?.getString('theme') ?? 'system';
+
+    switch (themeFromMemory) {
+      case 'light':
+        _currentTheme = ThemeMode.light;
+        break;
+      case 'dark':
+        _currentTheme = ThemeMode.dark;
+        break;
+      default:
+        _currentTheme = ThemeMode.system;
+    }
+  }
+
   get currentTheme => _currentTheme;
-  ThemeMode _currentTheme = ThemeMode.light;
 
   void setCurrentTheme(ThemeMode? mode) {
     _currentTheme = mode ?? ThemeMode.light;
+
+    final _currentThemeString = mode.toString().split('.')[1];
+    _prefs!.setString('theme', _currentThemeString);
 
     notifyListeners();
   }
