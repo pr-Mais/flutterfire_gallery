@@ -1,0 +1,40 @@
+name: Build Flutter Web
+
+on:
+  push:
+    branches:
+      - main
+      - backup
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+
+      - uses: subosito/flutter-action@v1
+        with:
+          channel: 'stable'
+
+      - name: Build
+        run: |
+          flutter packages get
+          flutter build web
+      - run: cat index.html
+        working-directory: ./build/web
+      - run: sed -i '/base href/d' index.html
+        working-directory: ./build/web
+      - run: cat index.html
+        working-directory: ./build/web
+
+      - run: |
+          cd build/web
+          git init
+          git config user.name 'github-actions[bot]'
+          git config user.email github-actions@github.com
+          git status
+          git remote add origin https://${{secrets.ACCESS_TOKEN}}@github.com/pr-Mais/flutterfire_gallery.git
+          git checkout -b gh-pages
+          git add --all
+          git commit -m "update"
+          git push origin gh-pages -f
