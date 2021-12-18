@@ -13,6 +13,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_signin_button: ^2.0.0
+  image_picker: ^0.8.4+4
   provider: ^6.0.1
   shared_preferences: ^2.0.11
 

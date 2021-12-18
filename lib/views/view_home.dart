@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../constants.dart';
 import 'tab_my_gallery.dart';
@@ -14,6 +17,7 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   PageController pageController = PageController();
   int currentPage = 0;
+  final _picker = ImagePicker();
 
   final titles = [
     'My gallery',
@@ -32,6 +36,17 @@ class _HomeViewState extends State<HomeView> {
     });
   }
 
+  void onPickImage() async {
+    // Pick an image
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+
+    log('${image?.path}');
+
+    if (image != null) {
+      // TODO
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -40,6 +55,16 @@ class _HomeViewState extends State<HomeView> {
       appBar: AppBar(
         title: Text(titles[currentPage]),
       ),
+      floatingActionButtonLocation:
+          MediaQuery.of(context).size.width > kMobileBreakpoint
+              ? FloatingActionButtonLocation.endTop
+              : FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: currentPage == 0
+          ? FloatingActionButton(
+              child: const Icon(Icons.add_a_photo_rounded),
+              onPressed: onPickImage,
+            )
+          : null,
       body: Row(
         children: [
           if (width > kMobileBreakpoint)
