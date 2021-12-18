@@ -125,11 +125,7 @@ class _AuthViewState extends State<AuthView> {
                   const SizedBox(height: 20),
                   Text(
                     'FlutterFire \nGallery',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 35,
-                      color: Theme.of(context).primaryColor,
-                    ),
+                    style: Theme.of(context).textTheme.headline1,
                   ),
                   const SizedBox(height: 20),
                   AnimatedError(
