@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'initialize_firebase.dart';
 import 'services/shared_prefs.dart';
 import 'views/view_auth.dart';
 import 'views/view_home.dart';
@@ -11,12 +12,12 @@ import 'theme/theme_provider.dart';
 /// false = no signed in user
 const bool kUser = true;
 
-const env = String.fromEnvironment('env');
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await SharedPrefsService.instance.init();
+
+  await initializeFirebase();
 
   runApp(const GalleryApp());
 }
