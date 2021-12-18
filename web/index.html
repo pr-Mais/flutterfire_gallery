@@ -32,9 +32,27 @@
 
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
+
+  <meta name="google-signin-client_id"
+    content="783803972398-vjt8lkucurkl7np20sp7srg6pupukhi9.apps.googleusercontent.com">
 </head>
 
 <body>
+  <!-- Firebase Configuration -->
+  <script>
+    var firebaseConfig = {
+      apiKey: "AIzaSyAb2dBbEOiY03iJMB8f3o_Urg7YEFLO7wM",
+      authDomain: "flutterfire-gallery-202119.firebaseapp.com",
+      projectId: "flutterfire-gallery-202119",
+      storageBucket: "flutterfire-gallery-202119.appspot.com",
+      messagingSenderId: "783803972398",
+      appId: "1:783803972398:web:6be08b953369dd722c58bf",
+      clientId: ""
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+  </script>
   <!-- This script installs service_worker.js to provide PWA functionality to
        application. For more information, see:
        https://developers.google.com/web/fundamentals/primers/service-workers -->

@@ -35,6 +35,7 @@ class GalleryApp extends StatelessWidget {
           final currentTheme = context.select<FlutterFireTheme, ThemeMode>(
               (theme) => theme.currentTheme);
           return MaterialApp(
+            title: "FlutterFire Gallery",
             debugShowCheckedModeBanner: env == 'dev',
             theme: lightTheme,
             darkTheme: darkTheme,

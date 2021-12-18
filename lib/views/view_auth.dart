@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import '/widgets/widget_animated_error.dart';
 
 /// The mode of the current auth session, either [AuthMode.login] or [AuthMode.register].
@@ -67,14 +68,48 @@ class _AuthViewState extends State<AuthView> {
     }
   }
 
-  onGoogleAuth() async {}
+  onGoogleAuth() async {
+    try {
+      setIsLoading(true);
+
+      // Trigger the authentication flow
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+      if (googleUser != null) {
+        // Obtain the auth details from the request
+        final GoogleSignInAuthentication? googleAuth =
+            await googleUser.authentication;
+
+        // Create a new credential
+        final credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth?.accessToken,
+          idToken: googleAuth?.idToken,
+        );
+
+        // Once signed in, return the UserCredential
+        await FirebaseAuth.instance.signInWithCredential(credential);
+      }
+
+      setIsLoading(false);
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        error = '${e.message}';
+      });
+
+      setIsLoading(false);
+    } catch (e) {
+      debugPrint('$e');
+
+      setIsLoading(false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(30.0),
+          padding: const EdgeInsets.symmetric(horizontal: 30.0),
           child: Form(
             key: formKey,
             autovalidateMode: AutovalidateMode.onUserInteraction,
