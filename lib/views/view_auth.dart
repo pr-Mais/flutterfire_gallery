@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 
@@ -119,6 +120,33 @@ class _AuthViewState extends State<AuthView> {
                           ),
                           onPressed: onGoogleAuth,
                         ),
+                ),
+                const SizedBox(height: 20),
+                RichText(
+                  text: TextSpan(
+                    style: Theme.of(context).textTheme.bodyText1,
+                    children: [
+                      TextSpan(
+                        text: mode == AuthMode.login
+                            ? "Don't have an account? "
+                            : 'You have an account? ',
+                      ),
+                      TextSpan(
+                        text: mode == AuthMode.login
+                            ? 'Register now'
+                            : 'Click to login',
+                        style: const TextStyle(color: Colors.blue),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            setState(() {
+                              mode = mode == AuthMode.login
+                                  ? AuthMode.register
+                                  : AuthMode.login;
+                            });
+                          },
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
