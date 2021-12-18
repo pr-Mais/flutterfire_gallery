@@ -11,6 +11,8 @@ import 'theme/theme_provider.dart';
 /// false = no signed in user
 const bool kUser = true;
 
+const env = String.fromEnvironment('env');
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -36,6 +38,7 @@ class GalleryApp extends StatelessWidget {
           final currentTheme = context.select<FlutterFireTheme, ThemeMode>(
               (theme) => theme.currentTheme);
           return MaterialApp(
+            debugShowCheckedModeBanner: env == 'dev',
             theme: lightTheme,
             darkTheme: darkTheme,
             themeMode: currentTheme,
