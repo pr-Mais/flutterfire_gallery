@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutterfire_gallery/theme/theme_provider.dart';
+import 'package:provider/provider.dart';
 
 import 'views/view_auth.dart';
 import 'views/view_home.dart';
+import 'theme/theme_provider.dart';
 
 /// Temporarily we will use this const to mimic the state of user.
 /// true = there's a signed in user
@@ -20,12 +21,22 @@ class GalleryApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: FlutterFireTheme().lightTheme,
-      darkTheme: FlutterFireTheme().darkTheme,
-      themeMode: FlutterFireTheme().currentTheme,
-      home: const AuthGate(),
-    );
+    return ChangeNotifierProvider<FlutterFireTheme>(
+        create: (_) => FlutterFireTheme(),
+        builder: (context, __) {
+          final lightTheme = context
+              .select<FlutterFireTheme, ThemeData>((theme) => theme.lightTheme);
+          final darkTheme = context
+              .select<FlutterFireTheme, ThemeData>((theme) => theme.darkTheme);
+          final currentTheme = context.select<FlutterFireTheme, ThemeMode>(
+              (theme) => theme.currentTheme);
+          return MaterialApp(
+            theme: lightTheme,
+            darkTheme: darkTheme,
+            themeMode: currentTheme,
+            home: const AuthGate(),
+          );
+        });
   }
 }
 

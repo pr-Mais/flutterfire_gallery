@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../theme/theme_provider.dart';
 
@@ -46,7 +47,7 @@ class ThemeSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var themeProvider = FlutterFireTheme();
+    var themeProvider = context.watch<FlutterFireTheme>();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

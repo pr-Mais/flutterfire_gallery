@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutterfire_gallery/theme/constants.dart';
 
-class FlutterFireTheme {
+class FlutterFireTheme with ChangeNotifier {
   get currentTheme => _currentTheme;
   ThemeMode _currentTheme = ThemeMode.light;
 
   void setCurrentTheme(ThemeMode? mode) {
     _currentTheme = mode ?? ThemeMode.light;
+
+    notifyListeners();
   }
 
   final primaryColor = const Color(kPrimaryColor);
