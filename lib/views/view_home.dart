@@ -27,6 +27,14 @@ class _HomeViewState extends State<HomeView> {
   void initState() {
     super.initState();
     viewModel = GalleryViewModel();
+
+    viewModel.storage.streamGallery().listen((event) {
+      if (event != null) {
+        viewModel.addToMyImages(event);
+      } else {
+        ScaffoldMessenger.of(context).clearSnackBars();
+      }
+    });
   }
 
   final titles = [

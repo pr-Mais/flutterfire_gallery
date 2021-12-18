@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutterfire_gallery/services/storage.dart';
 import 'package:image_picker/image_picker.dart';
 
 class GalleryViewModel extends ChangeNotifier {
+  final storage = StorageService();
+
   /// List of current user's images.
   List<String> myImages = [];
 
@@ -21,11 +24,15 @@ class GalleryViewModel extends ChangeNotifier {
 
   uploadToStorage(XFile image) async {
     addToMyImages(image.path);
+    await storage.uploadImage(image);
   }
 
   Future deleteImage(String image) async {
     myImages.remove(image);
 
     notifyListeners();
+
+    await storage.delete(image);
+    storage.streamGalleryController.add(null);
   }
 }

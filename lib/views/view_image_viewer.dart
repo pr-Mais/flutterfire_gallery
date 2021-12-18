@@ -23,14 +23,14 @@ class ImageViewerView extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.delete_rounded),
             onPressed: () async {
-              Navigator.of(context).pop();
-              await gallery.deleteImage(image);
-
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text('Image deleted.'),
+                  content: Text('Deleting...'),
                 ),
               );
+              await gallery.deleteImage(image);
+              ScaffoldMessenger.of(context).removeCurrentSnackBar();
+              Navigator.of(context).pop();
             },
           ),
         ],

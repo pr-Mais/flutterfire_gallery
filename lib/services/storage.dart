@@ -27,7 +27,10 @@ class StorageService {
 
   Future uploadImage(XFile image) async {
     try {
-      await galleryRef.child(image.name).putData(await image.readAsBytes());
+      final task =
+          await galleryRef.child(image.name).putData(await image.readAsBytes());
+      final url = await task.ref.getDownloadURL();
+      refs[url] = task.ref;
     } on FirebaseException {
       rethrow;
     }
@@ -45,7 +48,7 @@ class StorageService {
   }
 
   Future delete(String image) async {
-    await refs[image]!.delete();
+    await refs[image]?.delete();
     refs.remove(image);
   }
 }
