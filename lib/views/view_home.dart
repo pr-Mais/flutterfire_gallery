@@ -2,8 +2,10 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 import '../constants.dart';
+import 'models/gallery_view_model.dart';
 import 'tab_my_gallery.dart';
 import 'tab_settings.dart';
 
@@ -15,9 +17,17 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  late GalleryViewModel viewModel;
+
   PageController pageController = PageController();
   int currentPage = 0;
   final _picker = ImagePicker();
+
+  @override
+  void initState() {
+    super.initState();
+    viewModel = GalleryViewModel();
+  }
 
   final titles = [
     'My gallery',
@@ -43,7 +53,7 @@ class _HomeViewState extends State<HomeView> {
     log('${image?.path}');
 
     if (image != null) {
-      // TODO
+      viewModel.uploadToStorage(image);
     }
   }
 
@@ -51,67 +61,71 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(titles[currentPage]),
-      ),
-      floatingActionButtonLocation:
-          MediaQuery.of(context).size.width > kMobileBreakpoint
-              ? FloatingActionButtonLocation.endTop
-              : FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: currentPage == 0
-          ? FloatingActionButton(
-              child: const Icon(Icons.add_a_photo_rounded),
-              onPressed: onPickImage,
-            )
-          : null,
-      body: Row(
-        children: [
-          if (width > kMobileBreakpoint)
-            NavigationRail(
-              selectedIndex: currentPage,
-              onDestinationSelected: onPageChanged,
-              destinations: [
-                NavigationRailDestination(
-                  icon: const Icon(Icons.home_rounded),
-                  label: Text(titles[0]),
+    return ChangeNotifierProvider.value(
+        value: viewModel,
+        builder: (context, _) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(titles[currentPage]),
+            ),
+            floatingActionButtonLocation:
+                MediaQuery.of(context).size.width > kMobileBreakpoint
+                    ? FloatingActionButtonLocation.endTop
+                    : FloatingActionButtonLocation.centerDocked,
+            floatingActionButton: currentPage == 0
+                ? FloatingActionButton(
+                    child: const Icon(Icons.add_a_photo_rounded),
+                    onPressed: onPickImage,
+                  )
+                : null,
+            body: Row(
+              children: [
+                if (width > kMobileBreakpoint)
+                  NavigationRail(
+                    selectedIndex: currentPage,
+                    onDestinationSelected: onPageChanged,
+                    destinations: [
+                      NavigationRailDestination(
+                        icon: const Icon(Icons.home_rounded),
+                        label: Text(titles[0]),
+                      ),
+                      NavigationRailDestination(
+                        icon: const Icon(Icons.settings_rounded),
+                        label: Text(titles[1]),
+                      )
+                    ],
+                  ),
+                if (width > kMobileBreakpoint)
+                  const VerticalDivider(thickness: 1, width: 1),
+                Expanded(
+                  child: PageView(
+                    controller: pageController,
+                    onPageChanged: updateCurrentPage,
+                    children: const [
+                      MyGalleryView(),
+                      SettingsView(),
+                    ],
+                  ),
                 ),
-                NavigationRailDestination(
-                  icon: const Icon(Icons.settings_rounded),
-                  label: Text(titles[1]),
-                )
               ],
             ),
-          if (width > kMobileBreakpoint)
-            const VerticalDivider(thickness: 1, width: 1),
-          Expanded(
-            child: PageView(
-              controller: pageController,
-              onPageChanged: updateCurrentPage,
-              children: const [
-                MyGalleryView(),
-                SettingsView(),
-              ],
-            ),
-          ),
-        ],
-      ),
-      bottomNavigationBar: width > kMobileBreakpoint
-          ? null
-          : BottomNavigationBar(
-              onTap: onPageChanged,
-              currentIndex: currentPage,
-              items: [
-                BottomNavigationBarItem(
-                  icon: const Icon(Icons.home_rounded),
-                  label: titles[0],
-                ),
-                BottomNavigationBarItem(
-                  icon: const Icon(Icons.settings_rounded),
-                  label: titles[1],
-                )
-              ],
-            ),
-    );
+            bottomNavigationBar: width > kMobileBreakpoint
+                ? null
+                : BottomNavigationBar(
+                    onTap: onPageChanged,
+                    currentIndex: currentPage,
+                    items: [
+                      BottomNavigationBarItem(
+                        icon: const Icon(Icons.home_rounded),
+                        label: titles[0],
+                      ),
+                      BottomNavigationBarItem(
+                        icon: const Icon(Icons.settings_rounded),
+                        label: titles[1],
+                      )
+                    ],
+                  ),
+          );
+        });
   }
 }
