@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
 
 /// The mode of the current auth session, either [AuthMode.login] or [AuthMode.register].
 enum AuthMode { login, register }
@@ -98,6 +99,26 @@ class _AuthViewState extends State<AuthView> {
                         ? const CircularProgressIndicator.adaptive()
                         : Text(mode.label),
                   ),
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  height: 45,
+                  child: isLoading
+                      ? const SizedBox(
+                          width: 45,
+                          child: Center(
+                            child: CircularProgressIndicator.adaptive(),
+                          ),
+                        )
+                      : SignInButton(
+                          Buttons.Google,
+                          elevation: 0.8,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          onPressed: onGoogleAuth,
+                        ),
                 ),
               ],
             ),
